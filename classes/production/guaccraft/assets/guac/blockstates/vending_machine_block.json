@@ -1,0 +1,5 @@
+{
+  "variants": {
+    "normal": { "model":"guac:vending_machine_block" }
+  }
+}

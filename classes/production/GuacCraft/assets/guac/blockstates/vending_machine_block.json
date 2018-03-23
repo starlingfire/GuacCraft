@@ -1,0 +1,31 @@
+{
+  "forge_marker": 1,
+  "defaults": {
+    "transform": "forge:default-block",
+    "model":"guac:vending_machine_block",
+    "textures": {
+      "particle": "guac:blocks/vending_machine"
+    }
+  },
+  "variants": {
+    "inventory": [{}],
+    "base": {
+      "true": {},
+      "false": {}
+    },
+    "facing": {
+      "west": {
+        "y": 90
+      },
+      "east": {
+        "y": -90
+      },
+      "north": {
+        "y": 180
+      },
+      "south": {
+      }
+    }
+  }
+}
+

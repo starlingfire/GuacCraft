@@ -1,0 +1,16 @@
+[
+{
+  "modid": "guac",
+  "name": "GuacCraft",
+  "description": "A mod for GuacCraft.",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authorList": ["Starlingfire"],
+  "credits": "Starlingfire",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]
