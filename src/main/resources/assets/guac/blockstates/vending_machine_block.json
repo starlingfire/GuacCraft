@@ -11,7 +11,9 @@
     "inventory": [{}],
     "base": {
       "true": {},
-      "false": {}
+      "false": {
+        "model":"guac:vending_machine_block_top"
+      }
     },
     "facing": {
       "west": {

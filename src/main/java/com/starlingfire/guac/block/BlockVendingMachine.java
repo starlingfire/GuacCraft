@@ -50,7 +50,7 @@ public class BlockVendingMachine extends BlockMod implements IGuacBlock {
     public static final PropertyDirection FACING = BlockHorizontal.FACING;
     public static final PropertyBool BASE = PropertyBool.create("base");
 
-    protected static final AxisAlignedBB VENDING_MACHINE_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 2.0D, 1.0D);
+    protected static final AxisAlignedBB VENDING_MACHINE_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
     public BlockVendingMachine() {
         super("vending_machine_block", Material.IRON);
@@ -109,7 +109,8 @@ public class BlockVendingMachine extends BlockMod implements IGuacBlock {
     @Override
     public boolean canPlaceBlockAt(World world, BlockPos pos) {
         Block blockBelow = world.getBlockState(pos.down()).getBlock();
-        if (blockBelow == this) {
+        //if (blockBelow == this) {
+        if (blockBelow == this.getDefaultState().withProperty(BASE, true)){
             return false;
         }
         Block blockAbove = world.getBlockState(pos.up(2)).getBlock();
@@ -118,18 +119,12 @@ public class BlockVendingMachine extends BlockMod implements IGuacBlock {
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        world.setBlockState(pos.up(), Blocks.BARRIER.getDefaultState());//this.getDefaultState().withProperty(BASE, false));
-        if (!world.isRemote && placer instanceof EntityPlayer) {
-            TileVendingMachine tileVendingMachine = (TileVendingMachine) world.getTileEntity(pos);
-            if(tileVendingMachine != null) {
-                tileVendingMachine.setOwner((EntityPlayer) placer);
-            }
-        }
+        world.setBlockState(pos.up(), this.getDefaultState().withProperty(BASE, false).withProperty(FACING, state.getValue(FACING)), 2);
     }
 
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
-        EnumFacing facing = EnumFacing.getDirectionFromEntityLiving(pos, placer);
+        EnumFacing facing = EnumFacing.getDirectionFromEntityLiving(pos, placer).getOpposite();
         if(facing.getAxis() == EnumFacing.Axis.Y) {
             facing = EnumFacing.NORTH;
         }
@@ -139,7 +134,6 @@ public class BlockVendingMachine extends BlockMod implements IGuacBlock {
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
-        TileVendingMachine tileVendingMachine = getTileVendingMachine(world, pos);
         super.breakBlock(world, pos, state);
         if (world.getBlockState(pos.up()).getBlock() == this) {
             world.setBlockToAir(pos.up());
