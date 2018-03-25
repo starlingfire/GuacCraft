@@ -1,0 +1,41 @@
+Symbol range map extraction starting
+Processing 13 files
+startProcessing "com/starlingfire/guac/GuacCraft.java" md5: 7d3a669a4aa7d9e05d95680872f2936e
+endProcessing "com/starlingfire/guac/GuacCraft.java"
+
+startProcessing "com/starlingfire/guac/appliance/GuacAppliance.java" md5: c16925899e886f27223e7707d512cd81
+endProcessing "com/starlingfire/guac/appliance/GuacAppliance.java"
+
+startProcessing "com/starlingfire/guac/block/BlockVendingMachine.java" md5: 800f24f5360e5bd2caabf3368384801c
+endProcessing "com/starlingfire/guac/block/BlockVendingMachine.java"
+
+startProcessing "com/starlingfire/guac/block/IGuacBlock.java" md5: cfb93ad31480528eb1ac963b72546b13
+endProcessing "com/starlingfire/guac/block/IGuacBlock.java"
+
+startProcessing "com/starlingfire/guac/feature/VendingMachine.java" md5: b4b0db88ef8ba25ea98864faa4c6fdf9
+endProcessing "com/starlingfire/guac/feature/VendingMachine.java"
+
+startProcessing "com/starlingfire/guac/module/ConfigHelper.java" md5: c625d4add5c758d207ee4f464e7a46ff
+endProcessing "com/starlingfire/guac/module/ConfigHelper.java"
+
+startProcessing "com/starlingfire/guac/module/Feature.java" md5: c6a0d319561d07bda047e8594aca2f12
+endProcessing "com/starlingfire/guac/module/Feature.java"
+
+startProcessing "com/starlingfire/guac/module/GlobalConfig.java" md5: 322d4179e8a04690256a36496004c7df
+endProcessing "com/starlingfire/guac/module/GlobalConfig.java"
+
+startProcessing "com/starlingfire/guac/module/Module.java" md5: 16d0c90e9cba54aee8ea36380950a153
+endProcessing "com/starlingfire/guac/module/Module.java"
+
+startProcessing "com/starlingfire/guac/module/ModuleLoader.java" md5: cb964e7f1002e011de418b1de1637ab7
+endProcessing "com/starlingfire/guac/module/ModuleLoader.java"
+
+startProcessing "com/starlingfire/guac/proxy/ClientProxy.java" md5: 90354086d29fc50851c35c946ed3032e
+endProcessing "com/starlingfire/guac/proxy/ClientProxy.java"
+
+startProcessing "com/starlingfire/guac/proxy/CommonProxy.java" md5: ec68374713ca0bdb3150a7b9da66ffc6
+endProcessing "com/starlingfire/guac/proxy/CommonProxy.java"
+
+startProcessing "com/starlingfire/guac/tile/TileVendingMachine.java" md5: b7e42406493165b2f448c23619e7e1a1
+endProcessing "com/starlingfire/guac/tile/TileVendingMachine.java"
+

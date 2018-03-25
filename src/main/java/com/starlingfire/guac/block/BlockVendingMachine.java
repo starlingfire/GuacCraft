@@ -10,9 +10,7 @@
  */
 package com.starlingfire.guac.block;
 
-import com.starlingfire.guac.GuacCraft;
 import com.starlingfire.guac.tile.TileVendingMachine;
-import net.minecraft.block.Block;
 import net.minecraft.block.BlockHorizontal;
 import net.minecraft.block.SoundType;
 import net.minecraft.block.material.Material;
@@ -23,9 +21,7 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.creativetab.CreativeTabs;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemStack;
-import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.EnumBlockRenderType;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumHand;
@@ -40,17 +36,15 @@ import javax.annotation.Nullable;
 
 public class BlockVendingMachine extends BlockMod implements IGuacBlock {
 
-    /*
-        protected static final AxisAlignedBB SOUTH_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.1875D);
-        protected static final AxisAlignedBB NORTH_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.8125D, 1.0D, 1.0D, 1.0D);
-        protected static final AxisAlignedBB WEST_AABB = new AxisAlignedBB(0.8125D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
-        protected static final AxisAlignedBB EAST_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.1875D, 1.0D, 1.0D);
-    */
+    //TODO: Use 2x height AABB for "base" variant; null for non-base variant
+    protected static final AxisAlignedBB SOUTH_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 0.9375D);
+    protected static final AxisAlignedBB WEST_AABB = new AxisAlignedBB(0.0625, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
+    protected static final AxisAlignedBB NORTH_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0625, 1.0D, 1.0D, 1.0D);
+    protected static final AxisAlignedBB EAST_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 0.9375D, 1.0D, 1.0D);
 
-    public static final PropertyDirection FACING = BlockHorizontal.FACING;
+    public static final PropertyDirection BLOCKFACING = BlockHorizontal.FACING;
+    public static final PropertyDirection PLAYERFACING = PropertyDirection.create("facing", EnumFacing.Plane.HORIZONTAL);
     public static final PropertyBool BASE = PropertyBool.create("base");
-
-    protected static final AxisAlignedBB VENDING_MACHINE_AABB = new AxisAlignedBB(0.0D, 0.0D, 0.0D, 1.0D, 1.0D, 1.0D);
 
     public BlockVendingMachine() {
         super("vending_machine_block", Material.IRON);
@@ -63,12 +57,13 @@ public class BlockVendingMachine extends BlockMod implements IGuacBlock {
     @Override
     protected BlockStateContainer createBlockState() {
 
-        return new BlockStateContainer(this, FACING, BASE);
+        return new BlockStateContainer(this, BLOCKFACING, BASE);
     }
 
     @Override
     public int getMetaFromState(IBlockState state) {
-        int meta = state.getValue(FACING).getIndex();
+
+        int meta = state.getValue(BLOCKFACING).getIndex();
         if (state.getValue(BASE)) {
             meta |= 8;
         }
@@ -83,63 +78,54 @@ public class BlockVendingMachine extends BlockMod implements IGuacBlock {
             facing = EnumFacing.NORTH;
         }
         boolean isBase = (meta & 8) > 0;
-        return getDefaultState().withProperty(FACING, facing).withProperty(BASE, isBase);
+        return getDefaultState().withProperty(BLOCKFACING, facing).withProperty(BASE, isBase);
     }
 
-    /* Not used - can remove
-
-        @Nullable
-        public TileEntity createNewTileEntity(World world, int metadata) {
-            return new TileVendingMachine(!getStateFromMeta(metadata).getValue(BASE));
-        }
-    */
-
     @SuppressWarnings("deprecation")
-    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos)
-    {
-        return VENDING_MACHINE_AABB;
+    public AxisAlignedBB getBoundingBox(IBlockState state, IBlockAccess source, BlockPos pos) {
+        switch (state.getValue(BLOCKFACING)) {
+            case NORTH: return NORTH_AABB;
+            case EAST: return EAST_AABB;
+            case SOUTH: return SOUTH_AABB;
+            case WEST: return WEST_AABB;
+            default: return NORTH_AABB;
+        }
     }
 
     @Override
     @SuppressWarnings("deprecation")
     public AxisAlignedBB getCollisionBoundingBox(IBlockState state, IBlockAccess worldIn, BlockPos pos) {
-        return VENDING_MACHINE_AABB;
+        switch (state.getValue(BLOCKFACING)) {
+            case NORTH: return NORTH_AABB;
+            case EAST: return EAST_AABB;
+            case SOUTH: return SOUTH_AABB;
+            case WEST: return WEST_AABB;
+            default: return NORTH_AABB;
+        }
     }
 
     @Override
     public boolean canPlaceBlockAt(World world, BlockPos pos) {
-        Block blockBelow = world.getBlockState(pos.down()).getBlock();
-        //if (blockBelow == this) {
-        if (blockBelow == this.getDefaultState().withProperty(BASE, true)){
-            return false;
-        }
-        Block blockAbove = world.getBlockState(pos.up(2)).getBlock();
-        return blockAbove != this && super.canPlaceBlockAt(world, pos) && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
+        return super.canPlaceBlockAt(world, pos) && world.getBlockState(pos.up()).getBlock().isReplaceable(world, pos.up());
     }
 
     @Override
     public void onBlockPlacedBy(World world, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack) {
-        world.setBlockState(pos.up(), this.getDefaultState().withProperty(BASE, false).withProperty(FACING, state.getValue(FACING)), 2);
+        world.setBlockState(pos.up(), this.getDefaultState().withProperty(BASE, false).withProperty(BLOCKFACING, state.getValue(BLOCKFACING)), 2);
     }
 
     @Override
     public IBlockState getStateForPlacement(World world, BlockPos pos, EnumFacing side, float hitX, float hitY, float hitZ, int meta, EntityLivingBase placer, EnumHand hand) {
-        EnumFacing facing = EnumFacing.getDirectionFromEntityLiving(pos, placer).getOpposite();
-        if(facing.getAxis() == EnumFacing.Axis.Y) {
-            facing = EnumFacing.NORTH;
-        }
-        return getDefaultState().withProperty(FACING, facing).withProperty(BASE, true);
+        return getDefaultState().withProperty(PLAYERFACING, placer.getHorizontalFacing().getOpposite()).withProperty(BASE, true);
     }
-
 
     @Override
     public void breakBlock(World world, BlockPos pos, IBlockState state) {
         super.breakBlock(world, pos, state);
-        if (world.getBlockState(pos.up()).getBlock() == this) {
+        if(state.getValue(BASE))
             world.setBlockToAir(pos.up());
-        } else if (world.getBlockState(pos.down()).getBlock() == this) {
+        else
             world.setBlockToAir(pos.down());
-        }
     }
 
     @Override
